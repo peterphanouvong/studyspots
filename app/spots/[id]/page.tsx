@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -12,14 +13,35 @@ import {
   Store,
 } from "lucide-react";
 import { OffersGrid } from "@/components/offers-grid";
+import { TrackedLink } from "@/components/tracked-link";
 import { VerificationModule } from "@/components/verification-module";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { FORM_LINKS } from "@/lib/links";
 import { formatTodayHours, isOpenNow } from "@/lib/hours";
 import { SPOTS } from "@/lib/spots";
 
 export function generateStaticParams() {
   return SPOTS.map((spot) => ({ id: spot.id }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const spot = SPOTS.find((s) => s.id === id);
+  if (!spot) return { title: "Spot not found" };
+  const desc = `${spot.suburb} · ${spot.outletCount} outlets · ${
+    spot.hasWifi ? "WiFi" : "no WiFi"
+  } · ${spot.noiseLevel.toLowerCase()}. Can you study here?`;
+  return {
+    title: spot.name,
+    description: desc,
+    openGraph: { title: `${spot.name} · Study Spots`, description: desc },
+    twitter: { title: `${spot.name} · Study Spots`, description: desc },
+  };
 }
 
 export default async function SpotPage({
@@ -83,34 +105,45 @@ export default async function SpotPage({
         </p>
       </div>
 
-      <Button asChild size="lg" className="w-full">
-        <a href={spot.googleMapsUrl} target="_blank" rel="noopener noreferrer">
-          <Navigation className="size-4" />
-          Get Directions
-        </a>
-      </Button>
+      <TrackedLink
+        href={spot.googleMapsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        event="directions_clicked"
+        eventProps={{ id: spot.id, name: spot.name }}
+        className={cn(buttonVariants({ size: "lg" }), "w-full")}
+      >
+        <Navigation className="size-4" />
+        Get Directions
+      </TrackedLink>
 
       {(spot.website || spot.instagram) && (
         <div className="flex flex-wrap gap-2">
           {spot.website && (
-            <Button asChild variant="outline" size="sm">
-              <a href={spot.website} target="_blank" rel="noopener noreferrer">
-                <Globe className="size-4" />
-                Website
-              </a>
-            </Button>
+            <TrackedLink
+              href={spot.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              event="external_link_clicked"
+              eventProps={{ id: spot.id, kind: "website" }}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              <Globe className="size-4" />
+              Website
+            </TrackedLink>
           )}
           {spot.instagram && (
-            <Button asChild variant="outline" size="sm">
-              <a
-                href={`https://instagram.com/${spot.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AtSign className="size-4" />
-                {spot.instagram}
-              </a>
-            </Button>
+            <TrackedLink
+              href={`https://instagram.com/${spot.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              event="external_link_clicked"
+              eventProps={{ id: spot.id, kind: "instagram" }}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              <AtSign className="size-4" />
+              {spot.instagram}
+            </TrackedLink>
           )}
         </div>
       )}
@@ -141,12 +174,14 @@ export default async function SpotPage({
         </div>
       )}
 
-      <VerificationModule />
+      <VerificationModule spotId={spot.id} />
 
-      <a
+      <TrackedLink
         href={FORM_LINKS.claimCafe || "#"}
         target="_blank"
         rel="noopener noreferrer"
+        event="claim_cafe_clicked"
+        eventProps={{ id: spot.id, name: spot.name }}
         className="flex items-center justify-between gap-3 rounded-2xl bg-card p-4 text-sm transition-colors hover:brightness-95"
       >
         <span className="flex items-center gap-2">
@@ -157,7 +192,7 @@ export default async function SpotPage({
           </span>
         </span>
         <span className="shrink-0 text-muted-foreground">→</span>
-      </a>
+      </TrackedLink>
     </div>
   );
 }

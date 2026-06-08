@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Coffee, Info, Plug, Volume2, Wifi } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { track } from "@/lib/analytics";
 import { coreAmenities, type AmenityIcon } from "@/lib/amenities";
 import { formatDistance } from "@/lib/distance";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,13 @@ export function SpotCard({
   return (
     <Link
       href={`/spots/${spot.id}`}
+      onClick={() =>
+        track("spot_card_clicked", {
+          id: spot.id,
+          name: spot.name,
+          suburb: spot.suburb,
+        })
+      }
       onMouseEnter={() => onActiveChange?.(spot.id)}
       onMouseLeave={() => onActiveChange?.(null)}
       onFocus={() => onActiveChange?.(spot.id)}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { List, Map as MapIcon, MapPin, Plus } from "lucide-react";
+import { List, Map as MapIcon, Plus } from "lucide-react";
 import { ALL_AREAS, AreaSelect } from "@/components/area-select";
 import {
   EMPTY_FILTERS,
@@ -12,6 +12,7 @@ import { MapView, type MapBounds } from "@/components/map-view";
 import { SpotList } from "@/components/spot-list";
 import { Button } from "@/components/ui/button";
 import { useGeolocation } from "@/hooks/use-geolocation";
+import { track } from "@/lib/analytics";
 import { distanceKm } from "@/lib/distance";
 import { filterSpots } from "@/lib/filter";
 import { FORM_LINKS } from "@/lib/links";
@@ -39,8 +40,15 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
   const [showMapOnMobile, setShowMapOnMobile] = useState(false);
   const { coords, isPrecise } = useGeolocation();
 
-  const toggle = (key: FilterKey) =>
+  const toggle = (key: FilterKey) => {
+    track("filter_toggled", { filter: key, active: !filters[key] });
     setFilters((f) => ({ ...f, [key]: !f[key] }));
+  };
+
+  const changeArea = (next: string) => {
+    setArea(next);
+    track("area_changed", { area: next });
+  };
 
   // Pins reflect the selected area + active filter pills.
   const filtered = useMemo(() => {
@@ -66,6 +74,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
             href={FORM_LINKS.submitSpot || "#"}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => track("submit_spot_clicked", { from: "header" })}
           >
             <Plus className="size-4" />
             <span className="hidden sm:inline">Submit a spot</span>
@@ -74,7 +83,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
       </header>
 
       <div className="flex shrink-0 flex-col gap-2 border-b bg-background px-4 py-3 sm:flex-row sm:items-center">
-        <AreaSelect suburbs={SUBURBS} value={area} onChange={setArea} />
+        <AreaSelect suburbs={SUBURBS} value={area} onChange={changeArea} />
         <div className="min-w-0 flex-1">
           <FilterPills filters={filters} onToggle={toggle} />
         </div>
@@ -126,6 +135,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
                 href={FORM_LINKS.submitSpot || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track("submit_spot_clicked", { from: "footer" })}
                 className="hover:text-foreground hover:underline"
               >
                 Know a spot we're missing?
@@ -134,6 +144,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
                 href={FORM_LINKS.feedback || "#"}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => track("feedback_clicked")}
                 className="hover:text-foreground hover:underline"
               >
                 Send feedback
@@ -146,7 +157,12 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
       {/* Mobile-only view toggle */}
       <button
         type="button"
-        onClick={() => setShowMapOnMobile((v) => !v)}
+        onClick={() => {
+          track("map_list_toggled", {
+            view: showMapOnMobile ? "list" : "map",
+          });
+          setShowMapOnMobile((v) => !v);
+        }}
         className="fixed bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-lg md:hidden"
       >
         {showMapOnMobile ? (

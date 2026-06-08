@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ThumbsDown, ThumbsUp } from "lucide-react";
+import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 
 type Vote = "yes" | "no" | null;
@@ -10,7 +11,7 @@ type Vote = "yes" | "no" | null;
  * "Are the outlets working today?" — anonymous binary vote.
  * Counts live in client state only (reset on refresh) for the MVP.
  */
-export function VerificationModule() {
+export function VerificationModule({ spotId }: { spotId: string }) {
   const [yes, setYes] = useState(0);
   const [no, setNo] = useState(0);
   const [myVote, setMyVote] = useState<Vote>(null);
@@ -25,6 +26,7 @@ export function VerificationModule() {
     if (choice === "yes") setYes((n) => n + 1);
     else setNo((n) => n + 1);
     setMyVote(choice);
+    track("outlet_vote", { spotId, vote: choice });
   }
 
   const total = yes + no;

@@ -35,6 +35,9 @@ function FitBounds({
   return null;
 }
 
+// Public Map ID (enables Advanced Markers). Falls back to Google's demo ID in dev.
+const MAP_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID";
+
 export interface MapBounds {
   north: number;
   south: number;
@@ -79,7 +82,7 @@ export function MapView({
       <Map
         defaultCenter={center}
         defaultZoom={13}
-        mapId="DEMO_MAP_ID"
+        mapId={MAP_ID}
         disableDefaultUI
         gestureHandling="greedy"
         className="h-full w-full"
