@@ -25,6 +25,8 @@ export function useGeolocation(): GeolocationState {
 
   useEffect(() => {
     if (typeof navigator === "undefined" || !navigator.geolocation) {
+      // One-time flag that geolocation is unavailable; no cascading render.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setState((s) => ({ ...s, loading: false }));
       return;
     }

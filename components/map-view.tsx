@@ -58,7 +58,6 @@ function ReframeCurrent({ triggerKey }: { triggerKey: number }) {
       left: 24,
       right: 24,
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map, triggerKey]);
   return null;
 }

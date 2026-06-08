@@ -118,7 +118,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
                 onClick={() => track("submit_spot_clicked", { from: "footer" })}
                 className="hover:text-foreground hover:underline"
               >
-                Know a spot we're missing?
+                Know a spot we&apos;re missing?
               </a>
               <a
                 href={FORM_LINKS.feedback || "#"}
