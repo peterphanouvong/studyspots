@@ -17,10 +17,10 @@ export const EMPTY_FILTERS: Filters = {
 };
 
 const PILLS: { key: FilterKey; label: string; icon: LucideIcon }[] = [
-  { key: "openNow", label: "Open Now", icon: Clock },
-  { key: "openLate", label: "Open Late", icon: Moon },
-  { key: "outlets", label: "Has Outlets", icon: Plug },
-  { key: "wifi", label: "Has WiFi", icon: Wifi },
+  { key: "openNow", label: "Open now", icon: Clock },
+  { key: "openLate", label: "Open late", icon: Moon },
+  { key: "outlets", label: "Outlets", icon: Plug },
+  { key: "wifi", label: "Wi-Fi", icon: Wifi },
   { key: "quiet", label: "Quiet", icon: Volume2 },
 ];
 
@@ -31,7 +31,7 @@ interface FilterPillsProps {
 
 export function FilterPills({ filters, onToggle }: FilterPillsProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto sm:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex gap-2 overflow-x-auto sm:justify-center [scrollbar-width:none] py-1 [&::-webkit-scrollbar]:hidden">
       {PILLS.map(({ key, label, icon: Icon }) => {
         const active = filters[key];
         return (
@@ -41,10 +41,10 @@ export function FilterPills({ filters, onToggle }: FilterPillsProps) {
             aria-pressed={active}
             onClick={() => onToggle(key)}
             className={cn(
-              "flex shrink-0 items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors sm:gap-1.5 sm:px-3.5 sm:py-1.5 sm:text-sm",
+              "flex shrink-0 items-center gap-1 rounded-full border bg-card px-3 py-1 text-xs font-medium text-foreground transition-colors sm:gap-1.5 sm:px-3.5 sm:py-1.5 sm:text-sm",
               active
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground hover:bg-muted",
+                ? "border-foreground ring-1 ring-foreground"
+                : "border-border hover:border-foreground/40 hover:bg-muted",
             )}
           >
             <Icon className="size-3.5 sm:size-4" />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ALL_AREAS, AreaSelect } from "@/components/area-select";
+import { ALL_AREAS, AreaSearch } from "@/components/area-select";
 import { MobileSpotsSheet } from "@/components/mobile-spots-sheet";
 import {
   EMPTY_FILTERS,
@@ -69,15 +69,16 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
 
   return (
     <div className="flex h-[100dvh] flex-col">
-      <SiteHeader />
+      <SiteHeader
+        center={
+          <AreaSearch suburbs={SUBURBS} value={area} onChange={changeArea} />
+        }
+      />
 
-      <div className="relative z-50 flex shrink-0 flex-col gap-3 border-b bg-background px-4 py-3 sm:flex-row sm:items-center sm:px-5 sm:py-4">
-        <AreaSelect suburbs={SUBURBS} value={area} onChange={changeArea} />
-        <div className="min-w-0 flex-1">
+      <div className="relative z-50 flex shrink-0 flex-col gap-3 border-b bg-gray-50 px-4 pb-3 sm:flex-row sm:items-center sm:px-5 sm:pb-4">
+        <div className="min-w-0 flex-1 py-1">
           <FilterPills filters={filters} onToggle={toggle} />
         </div>
-        {/* Balances the area select so the pills sit centred in the bar. */}
-        <div className="hidden shrink-0 md:block md:w-48" aria-hidden />
       </div>
 
       {/* Airbnb-style: list on the left, fixed map on the right (desktop);

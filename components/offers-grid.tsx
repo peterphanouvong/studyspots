@@ -1,5 +1,6 @@
 import { Plug, Volume2, Wifi } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { coreAmenities, type AmenityIcon } from "@/lib/amenities";
 import { cn } from "@/lib/utils";
 import type { Spot } from "@/lib/types";
@@ -28,7 +29,9 @@ export function OffersGrid({ spot }: { spot: Spot }) {
               )}
             >
               <Icon className="size-5 shrink-0" strokeWidth={1.75} />
-              <span className={cn("text-[15px]", !a.available && "line-through")}>
+              <span
+                className={cn("text-[15px]", !a.available && "line-through")}
+              >
                 {a.label}
               </span>
             </div>
@@ -39,17 +42,12 @@ export function OffersGrid({ spot }: { spot: Spot }) {
       {((spot.vibe && spot.vibe.length > 0) || spot.music) && (
         <div className="mt-5 flex flex-wrap items-center gap-2 border-t pt-4">
           {spot.vibe?.map((v) => (
-            <span
-              key={v}
-              className="rounded-full bg-background px-2.5 py-0.5 text-xs font-medium text-foreground"
-            >
+            <Badge key={v} variant="accent">
               {v}
-            </span>
+            </Badge>
           ))}
           {spot.music && spot.music !== "None" && (
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
-              ♪ {spot.music}
-            </span>
+            <Badge variant="accent">♪ {spot.music}</Badge>
           )}
         </div>
       )}
