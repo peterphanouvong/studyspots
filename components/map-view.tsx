@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
   AdvancedMarker,
+  AdvancedMarkerAnchorPoint,
   APIProvider,
-  InfoWindow,
   Map,
   useMap,
 } from "@vis.gl/react-google-maps";
+import { MapSpotCard } from "@/components/map-spot-card";
 import { cn } from "@/lib/utils";
 import type { Coords } from "@/lib/distance";
 import type { Spot } from "@/lib/types";
@@ -35,6 +35,34 @@ function FitBounds({
   return null;
 }
 
+/**
+ * When `triggerKey` changes, re-frames the map's *current* visible bounds into
+ * the area not covered by the chrome/sheet — so what you saw stays in view as
+ * the bottom sheet expands. (Mobile: the sheet covers ~half the screen.)
+ */
+function ReframeCurrent({ triggerKey }: { triggerKey: number }) {
+  const map = useMap();
+  const firstRun = useRef(true);
+  useEffect(() => {
+    if (!map) return;
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    const bounds = map.getBounds();
+    if (!bounds) return;
+    const vh = typeof window === "undefined" ? 800 : window.innerHeight;
+    map.fitBounds(bounds, {
+      top: 156, // header + filters
+      bottom: Math.round(vh * 0.5), // half sheet
+      left: 24,
+      right: 24,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, triggerKey]);
+  return null;
+}
+
 // Public Map ID (enables Advanced Markers). Falls back to Google's demo ID in dev.
 const MAP_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID";
 
@@ -53,8 +81,10 @@ interface MapViewProps {
   activeId: string | null;
   onActiveChange: (id: string | null) => void;
   onBoundsChange: (bounds: MapBounds) => void;
-  /** Map re-frames to the current spots whenever this value changes. */
+  /** Map re-fits to the current spots whenever this value changes (area change). */
   fitKey: string;
+  /** Re-frames the current visible bounds whenever this changes (sheet → half). */
+  reframeKey: number;
 }
 
 export function MapView({
@@ -65,6 +95,7 @@ export function MapView({
   onActiveChange,
   onBoundsChange,
   fitKey,
+  reframeKey,
 }: MapViewProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = spots.find((s) => s.id === selectedId) ?? null;
@@ -90,6 +121,7 @@ export function MapView({
         onClick={() => setSelectedId(null)}
       >
         <FitBounds spots={spots} triggerKey={fitKey} />
+        <ReframeCurrent triggerKey={reframeKey} />
         {spots.map((spot) => {
           const highlighted = spot.id === activeId || spot.id === selectedId;
           return (
@@ -115,23 +147,20 @@ export function MapView({
         })}
 
         {selected && (
-          <InfoWindow
+          <AdvancedMarker
             position={{ lat: selected.lat, lng: selected.lng }}
-            pixelOffset={[0, -12]}
-            onCloseClick={() => setSelectedId(null)}
+            zIndex={30}
+            anchorPoint={AdvancedMarkerAnchorPoint.BOTTOM_CENTER}
           >
-            <div className="px-1 py-0.5">
-              <p className="text-sm font-semibold text-zinc-900">
-                {selected.name}
-              </p>
-              <Link
-                href={`/spots/${selected.id}`}
-                className="text-xs font-medium text-blue-600 underline"
-              >
-                View details
-              </Link>
+            {/* lifts the card clear of the pin */}
+            <div className="pb-3">
+              <MapSpotCard
+                spot={selected}
+                origin={center}
+                onClose={() => setSelectedId(null)}
+              />
             </div>
-          </InfoWindow>
+          </AdvancedMarker>
         )}
       </Map>
     </APIProvider>

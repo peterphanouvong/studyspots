@@ -31,7 +31,7 @@ interface FilterPillsProps {
 
 export function FilterPills({ filters, onToggle }: FilterPillsProps) {
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="flex gap-2 overflow-x-auto sm:justify-center [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       {PILLS.map(({ key, label, icon: Icon }) => {
         const active = filters[key];
         return (
@@ -41,13 +41,13 @@ export function FilterPills({ filters, onToggle }: FilterPillsProps) {
             aria-pressed={active}
             onClick={() => onToggle(key)}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors",
+              "flex shrink-0 items-center gap-1 rounded-full border px-3 py-1 text-xs font-medium transition-colors sm:gap-1.5 sm:px-3.5 sm:py-1.5 sm:text-sm",
               active
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-foreground hover:bg-muted",
             )}
           >
-            <Icon className="size-4" />
+            <Icon className="size-3.5 sm:size-4" />
             {label}
           </button>
         );

@@ -33,8 +33,8 @@ export interface Spot {
   hours: Hours;
   /** "Good to know" — house rules + practical tips. Display-only, never filtered. */
   houseRules?: string[];
-  /** Optional thumbnail; UI falls back to a placeholder when absent. */
-  imageUrl?: string;
+  /** Photos for the carousel + gallery. UI falls back to a placeholder when empty. */
+  images?: string[];
   /** Full URL to the cafe's website. */
   website?: string;
   /** Instagram handle, without the leading "@". */

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Coffee, Info, Plug, Volume2, Wifi } from "lucide-react";
+import { Info, Plug, Volume2, Wifi } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { ImageCarousel } from "@/components/image-carousel";
 import { track } from "@/lib/analytics";
 import { coreAmenities, type AmenityIcon } from "@/lib/amenities";
 import { formatDistance } from "@/lib/distance";
@@ -32,8 +32,6 @@ export function SpotCard({
   active,
   onActiveChange,
 }: SpotCardProps) {
-  const [imgError, setImgError] = useState(false);
-  const showImage = spot.imageUrl && !imgError;
   const amenities = coreAmenities(spot);
 
   return (
@@ -52,28 +50,15 @@ export function SpotCard({
       onBlur={() => onActiveChange?.(null)}
       className="group flex flex-col gap-3 rounded-2xl outline-none"
     >
-      <div
+      <ImageCarousel
+        images={spot.images}
+        alt={spot.name}
         className={cn(
-          "relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-muted ring-offset-2 ring-offset-background transition-all",
+          "aspect-[4/3] w-full rounded-2xl ring-offset-2 ring-offset-background transition-all",
           active && "ring-2 ring-primary",
           "group-focus-visible:ring-2 group-focus-visible:ring-ring",
         )}
-      >
-        {showImage ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={spot.imageUrl}
-            alt={spot.name}
-            loading="lazy"
-            onError={() => setImgError(true)}
-            className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted text-muted-foreground">
-            <Coffee className="size-10" strokeWidth={1.5} />
-          </div>
-        )}
-      </div>
+      />
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-baseline justify-between gap-2">

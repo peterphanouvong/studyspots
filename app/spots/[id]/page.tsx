@@ -5,14 +5,15 @@ import {
   ArrowLeft,
   AtSign,
   Clock,
-  Coffee,
   Globe,
   Info,
   MapPin,
   Navigation,
   Store,
 } from "lucide-react";
+import { GalleryGrid } from "@/components/gallery-grid";
 import { OffersGrid } from "@/components/offers-grid";
+import { SiteHeader } from "@/components/site-header";
 import { TrackedLink } from "@/components/tracked-link";
 import { VerificationModule } from "@/components/verification-module";
 import { buttonVariants } from "@/components/ui/button";
@@ -56,31 +57,20 @@ export default async function SpotPage({
   const open = isOpenNow(spot.hours);
 
   return (
-    <div className="mx-auto flex min-h-full w-full max-w-2xl flex-col gap-5 px-4 py-5">
-      <Link
-        href="/"
-        className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        All spots
-      </Link>
+    <>
+      <SiteHeader />
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8">
+        <Link
+          href="/"
+          className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          All spots
+        </Link>
 
-      <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-muted">
-        {spot.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={spot.imageUrl}
-            alt={spot.name}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-secondary to-muted text-muted-foreground">
-            <Coffee className="size-12" strokeWidth={1.5} />
-          </div>
-        )}
-      </div>
+        <GalleryGrid images={spot.images} alt={spot.name} />
 
-      <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
         <h1 className="font-heading text-[28px] font-bold leading-tight tracking-tight">
           {spot.name}
         </h1>
@@ -193,6 +183,7 @@ export default async function SpotPage({
         </span>
         <span className="shrink-0 text-muted-foreground">→</span>
       </TrackedLink>
-    </div>
+      </div>
+    </>
   );
 }

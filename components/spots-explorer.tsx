@@ -1,25 +1,23 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { List, Map as MapIcon, Plus } from "lucide-react";
 import { ALL_AREAS, AreaSelect } from "@/components/area-select";
+import { MobileSpotsSheet } from "@/components/mobile-spots-sheet";
 import {
   EMPTY_FILTERS,
   FilterPills,
   type FilterKey,
 } from "@/components/filter-pills";
 import { MapView, type MapBounds } from "@/components/map-view";
+import { SiteHeader } from "@/components/site-header";
 import { SpotList } from "@/components/spot-list";
-import { Button } from "@/components/ui/button";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { track } from "@/lib/analytics";
 import { distanceKm } from "@/lib/distance";
 import { filterSpots } from "@/lib/filter";
 import { FORM_LINKS } from "@/lib/links";
 import { SPOTS } from "@/lib/spots";
-import { cn } from "@/lib/utils";
 import type { Spot } from "@/lib/types";
-import { Wordmark } from "./wordmark";
 
 function inBounds(spot: Spot, b: MapBounds): boolean {
   return (
@@ -37,7 +35,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
   const [area, setArea] = useState<string>(ALL_AREAS);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [bounds, setBounds] = useState<MapBounds | null>(null);
-  const [showMapOnMobile, setShowMapOnMobile] = useState(false);
+  const [reframeNonce, setReframeNonce] = useState(0);
   const { coords, isPrecise } = useGeolocation();
 
   const toggle = (key: FilterKey) => {
@@ -65,65 +63,47 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
     [filtered, bounds],
   );
 
+  const countLabel = `${listed.length} ${listed.length === 1 ? "spot" : "spots"}${
+    area === ALL_AREAS ? (isPrecise ? " near you" : "") : ` in ${area}`
+  }`;
+
   return (
     <div className="flex h-[100dvh] flex-col">
-      <header className="flex shrink-0 items-center justify-between gap-2 border-b bg-background px-4 py-3">
-        <Wordmark className="text-lg" />
-        <Button asChild variant="outline" size="sm">
-          <a
-            href={FORM_LINKS.submitSpot || "#"}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => track("submit_spot_clicked", { from: "header" })}
-          >
-            <Plus className="size-4" />
-            <span className="hidden sm:inline">Submit a spot</span>
-          </a>
-        </Button>
-      </header>
+      <SiteHeader />
 
-      <div className="flex shrink-0 flex-col gap-2 border-b bg-background px-4 py-3 sm:flex-row sm:items-center">
+      <div className="relative z-50 flex shrink-0 flex-col gap-3 border-b bg-background px-4 py-3 sm:flex-row sm:items-center sm:px-5 sm:py-4">
         <AreaSelect suburbs={SUBURBS} value={area} onChange={changeArea} />
         <div className="min-w-0 flex-1">
           <FilterPills filters={filters} onToggle={toggle} />
         </div>
+        {/* Balances the area select so the pills sit centred in the bar. */}
+        <div className="hidden shrink-0 md:block md:w-48" aria-hidden />
       </div>
 
-      <div className="flex min-h-0 flex-1">
-        {/* Map: 40% on desktop; full-screen toggle on mobile */}
-        <div
-          className={cn(
-            "h-full md:block md:w-2/5",
-            showMapOnMobile ? "block w-full" : "hidden",
-          )}
-        >
-          <MapView
-            apiKey={apiKey}
-            spots={filtered}
-            center={coords}
-            activeId={activeId}
-            onActiveChange={setActiveId}
-            onBoundsChange={setBounds}
-            fitKey={area}
-          />
+      {/* Airbnb-style: list on the left, fixed map on the right (desktop);
+          full-screen map + bottom sheet (mobile). */}
+      <div className="flex min-h-0 flex-1 md:flex-row-reverse">
+        <div className="block h-full w-full md:w-2/5 md:py-4 md:pr-4">
+          <div className="h-full w-full overflow-hidden md:rounded-2xl md:border">
+            <MapView
+              apiKey={apiKey}
+              spots={filtered}
+              center={coords}
+              activeId={activeId}
+              onActiveChange={setActiveId}
+              onBoundsChange={setBounds}
+              fitKey={area}
+              reframeKey={reframeNonce}
+            />
+          </div>
         </div>
 
-        {/* List: 60% on desktop; hidden on mobile when map is shown */}
-        <div
-          className={cn(
-            "w-full overflow-y-auto md:block md:w-3/5",
-            showMapOnMobile && "hidden",
-          )}
-        >
-          <div className="flex min-h-full flex-col px-4 py-5">
-            <p className="mb-4 text-sm text-muted-foreground">
-              {listed.length} {listed.length === 1 ? "spot" : "spots"}
-              {area === ALL_AREAS
-                ? isPrecise
-                  ? " near you"
-                  : ""
-                : ` in ${area}`}
-            </p>
+        {/* List: left 60% on desktop only */}
+        <div className="hidden overflow-y-auto md:block md:w-3/5">
+          <div className="flex min-h-full flex-col px-6 py-7">
+            <h1 className="mb-6 font-heading text-2xl font-bold tracking-tight">
+              {countLabel}
+            </h1>
             <SpotList
               spots={listed}
               origin={coords}
@@ -154,27 +134,15 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
         </div>
       </div>
 
-      {/* Mobile-only view toggle */}
-      <button
-        type="button"
-        onClick={() => {
-          track("map_list_toggled", {
-            view: showMapOnMobile ? "list" : "map",
-          });
-          setShowMapOnMobile((v) => !v);
-        }}
-        className="fixed bottom-5 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground shadow-lg md:hidden"
-      >
-        {showMapOnMobile ? (
-          <>
-            <List className="size-4" /> List View
-          </>
-        ) : (
-          <>
-            <MapIcon className="size-4" /> Map View
-          </>
-        )}
-      </button>
+      {/* Mobile bottom sheet (peek → half → full) */}
+      <MobileSpotsSheet
+        spots={listed}
+        origin={coords}
+        activeId={activeId}
+        onActiveChange={setActiveId}
+        countLabel={countLabel}
+        onRecenter={() => setReframeNonce((n) => n + 1)}
+      />
     </div>
   );
 }

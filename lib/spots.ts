@@ -23,6 +23,21 @@ const gmaps = (name: string, address: string) =>
     `${name}, ${address}`,
   )}`;
 
+// ⚠️ PLACEHOLDER PHOTOS — generic stock cafe shots, NOT the real venues.
+// Replace with real per-cafe photos during photo verification before promoting.
+const STOCK = [
+  "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=70",
+  "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=1200&q=70",
+  "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&q=70",
+  "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=70",
+  "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200&q=70",
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=70",
+];
+
+/** 5 placeholder photos, rotated by index so each spot looks distinct. */
+const pics = (start: number): string[] =>
+  Array.from({ length: 5 }, (_, k) => STOCK[(start + k) % STOCK.length]);
+
 /**
  * Hyperlocal seed — Cabramatta & Canley Heights, SW Sydney.
  *
@@ -47,8 +62,7 @@ export const SPOTS: Spot[] = [
     houseRules: ["Limited street parking"],
     vibe: ["Colourful", "Earthy", "Homey"],
     music: "Asian Pop",
-    imageUrl:
-      "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800&q=70",
+    images: pics(0),
   },
   {
     id: "cafe-ngon-cabramatta",
@@ -65,8 +79,7 @@ export const SPOTS: Spot[] = [
     houseRules: ["Limited street parking"],
     vibe: ["Earthy"],
     music: "Viet-Pop",
-    imageUrl:
-      "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=800&q=70",
+    images: pics(1),
   },
   {
     id: "the-usual-cabramatta",
@@ -84,8 +97,7 @@ export const SPOTS: Spot[] = [
     website: "https://theusualcafe.com.au",
     vibe: ["Minimal"],
     music: "R&B",
-    imageUrl:
-      "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=800&q=70",
+    images: pics(2),
   },
   {
     id: "mondays-cabramatta",
@@ -106,8 +118,7 @@ export const SPOTS: Spot[] = [
     ],
     vibe: ["Minimal"],
     music: "None",
-    imageUrl:
-      "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=800&q=70",
+    images: pics(3),
   },
   {
     id: "salty-cafe-canley-heights",
@@ -127,8 +138,7 @@ export const SPOTS: Spot[] = [
     houseRules: ["Plenty of parking", "Open late — till 10pm"],
     instagram: "saltycafe_2166",
     vibe: ["Minimal"],
-    imageUrl:
-      "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=800&q=70",
+    images: pics(4),
   },
   {
     id: "harrys-house-canley-heights",
@@ -147,7 +157,6 @@ export const SPOTS: Spot[] = [
     hours: days({ weekday: h("06:30", "22:30"), sat: h("06:30", "23:00"), sun: h("06:30", "23:00") }),
     houseRules: ["Dessert café, open late", "Plenty of parking"],
     vibe: [],
-    imageUrl:
-      "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=800&q=70",
+    images: pics(5),
   },
 ];

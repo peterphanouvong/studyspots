@@ -30,7 +30,7 @@ export function SpotList({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+    <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2">
       {spots.map((spot) => (
         <SpotCard
           key={spot.id}
