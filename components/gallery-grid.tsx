@@ -11,10 +11,22 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
+ * Desktop grid layout per photo count (1 photo is a single hero, handled
+ * separately). `hero` makes the first tile span 2×2 as the focal image.
+ */
+const GALLERY_LAYOUTS: Record<number, { grid: string; hero: boolean }> = {
+  2: { grid: "grid-cols-2", hero: false },
+  3: { grid: "grid-cols-3 grid-rows-2", hero: true },
+  4: { grid: "grid-cols-2 grid-rows-2", hero: false },
+  5: { grid: "grid-cols-4 grid-rows-2", hero: true },
+};
+
+/**
  * Photo gallery for a spot:
  * - mobile: swipeable carousel
- * - desktop: Airbnb-style bento (1 large + 4 small) when there are 5+ photos,
- *   otherwise a single hero. "Show all photos" opens a lightbox.
+ * - desktop: layout adapts to photo count — single hero (1), split (2),
+ *   hero + 2 stacked (3), 2×2 grid (4), Airbnb bento 1 large + 4 small (5+).
+ *   "Show all photos" opens a lightbox.
  */
 export function GalleryGrid({
   images,
@@ -46,10 +58,22 @@ export function GalleryGrid({
         />
       </div>
 
-      {/* Desktop: bento grid (5+) or single hero */}
+      {/* Desktop: layout adapts to photo count */}
       <div className="hidden md:block">
-        {bento.length >= 5 ? (
-          <div className="grid aspect-[2/1] grid-cols-4 grid-rows-2 gap-2 overflow-hidden rounded-2xl">
+        {bento.length === 1 ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={pics[0]}
+            alt={alt}
+            className="aspect-video w-full rounded-2xl object-cover"
+          />
+        ) : (
+          <div
+            className={cn(
+              "grid aspect-2/1 gap-2 overflow-hidden rounded-2xl",
+              GALLERY_LAYOUTS[bento.length].grid,
+            )}
+          >
             {bento.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -58,18 +82,13 @@ export function GalleryGrid({
                 alt={`${alt} — photo ${i + 1}`}
                 className={cn(
                   "h-full w-full object-cover",
-                  i === 0 && "col-span-2 row-span-2",
+                  GALLERY_LAYOUTS[bento.length].hero &&
+                    i === 0 &&
+                    "col-span-2 row-span-2",
                 )}
               />
             ))}
           </div>
-        ) : (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={pics[0]}
-            alt={alt}
-            className="aspect-video w-full rounded-2xl object-cover"
-          />
         )}
       </div>
 

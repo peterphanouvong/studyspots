@@ -42,4 +42,8 @@ export interface Spot {
   /** Low-priority, display-only. */
   vibe?: string[];
   music?: string;
+  /** Founder's personal one-liner about the spot. Hero of the Spot Gacha match card. */
+  foundersTip?: string;
+  /** Founder has physically verified this spot. Drives the green "Verified" badge. */
+  verified?: boolean;
 }

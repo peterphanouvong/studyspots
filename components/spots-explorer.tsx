@@ -8,9 +8,14 @@ import {
   FilterPills,
   type FilterKey,
 } from "@/components/filter-pills";
+import { GachaButton } from "@/components/gacha-button";
+import { GachaMatchSheet } from "@/components/gacha-match-sheet";
+import { GachaOverlay } from "@/components/gacha-overlay";
 import { MapView, type MapBounds } from "@/components/map-view";
 import { SiteHeader } from "@/components/site-header";
+import { Separator } from "@/components/ui/separator";
 import { SpotList } from "@/components/spot-list";
+import { useGacha } from "@/hooks/use-gacha";
 import { useGeolocation } from "@/hooks/use-geolocation";
 import { track } from "@/lib/analytics";
 import { distanceKm } from "@/lib/distance";
@@ -37,13 +42,26 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
   const [bounds, setBounds] = useState<MapBounds | null>(null);
   const [reframeNonce, setReframeNonce] = useState(0);
   const { coords, isPrecise } = useGeolocation();
+  // When the spin lands, highlight the winner on the live map + log the reveal.
+  const gacha = useGacha({
+    onReveal: (winner) => {
+      setActiveId(winner.id);
+      track("gacha_revealed", {
+        id: winner.id,
+        name: winner.name,
+        suburb: winner.suburb,
+      });
+    },
+  });
 
   const toggle = (key: FilterKey) => {
+    if (gacha.isLocked) return; // state lock — no filtering mid-spin
     track("filter_toggled", { filter: key, active: !filters[key] });
     setFilters((f) => ({ ...f, [key]: !f[key] }));
   };
 
   const changeArea = (next: string) => {
+    if (gacha.isLocked) return;
     setArea(next);
     track("area_changed", { area: next });
   };
@@ -67,6 +85,17 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
     area === ALL_AREAS ? (isPrecise ? " near you" : "") : ` in ${area}`
   }`;
 
+  const startGacha = () => {
+    if (gacha.isLocked || filtered.length === 0) return;
+    track("gacha_started", { count: filtered.length });
+    gacha.start(filtered);
+  };
+
+  const dismissGacha = () => {
+    if (gacha.winner) track("gacha_dismissed", { id: gacha.winner.id });
+    gacha.dismiss();
+  };
+
   return (
     <div className="flex h-[100dvh] flex-col">
       <SiteHeader
@@ -76,8 +105,15 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
       />
 
       <div className="relative z-50 flex shrink-0 flex-col gap-3 border-b bg-gray-50 px-4 pb-3 sm:flex-row sm:items-center sm:px-5 sm:pb-4">
-        <div className="min-w-0 flex-1 py-1">
-          <FilterPills filters={filters} onToggle={toggle} />
+        <div className="flex min-w-0 flex-1 items-center gap-2.5 py-1 sm:justify-center">
+          <GachaButton
+            onStart={startGacha}
+            disabled={gacha.isLocked || filtered.length === 0}
+          />
+          <Separator orientation="vertical" className="h-8" />
+          <div className="min-w-0">
+            <FilterPills filters={filters} onToggle={toggle} />
+          </div>
         </div>
       </div>
 
@@ -143,6 +179,23 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
         onActiveChange={setActiveId}
         countLabel={countLabel}
         onRecenter={() => setReframeNonce((n) => n + 1)}
+      />
+
+      {/* Spot Gacha — spin overlay + reveal sheet */}
+      <GachaOverlay
+        phase={gacha.phase}
+        spots={gacha.spots}
+        highlightIndex={gacha.highlightIndex}
+        winner={gacha.winner}
+        muted={gacha.muted}
+        onToggleMute={gacha.toggleMute}
+        onCancel={dismissGacha}
+      />
+      <GachaMatchSheet
+        spot={gacha.winner}
+        origin={coords}
+        open={gacha.phase === "revealed"}
+        onClose={dismissGacha}
       />
     </div>
   );

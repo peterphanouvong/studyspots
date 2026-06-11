@@ -3,6 +3,7 @@ import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { PHProvider } from "@/components/posthog-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 // Warm, modern geometric sans — used for all text (headings + body).
 const jakarta = Plus_Jakarta_Sans({
@@ -55,6 +56,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <PHProvider>{children}</PHProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

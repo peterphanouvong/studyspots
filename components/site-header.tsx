@@ -21,7 +21,7 @@ export function SiteHeader({ center }: { center?: ReactNode }) {
         <Wordmark className="hidden text-lg sm:inline" />
       </Link>
       <div className="justify-self-center">{center}</div>
-      <Button asChild variant="secondary" className="justify-self-end">
+      <Button asChild variant="dark" className="justify-self-end">
         <a
           href={FORM_LINKS.submitSpot || "#"}
           target="_blank"
@@ -29,7 +29,7 @@ export function SiteHeader({ center }: { center?: ReactNode }) {
           onClick={() => track("submit_spot_clicked", { from: "header" })}
         >
           <Plus className="size-4" />
-          <span className="hidden sm:inline">Submit a spot</span>
+          <span className="hidden sm:inline">Nominate a spot</span>
         </a>
       </Button>
     </header>

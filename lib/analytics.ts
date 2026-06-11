@@ -11,7 +11,11 @@ export type AnalyticsEvent =
   | "feedback_clicked"
   | "claim_cafe_clicked"
   | "external_link_clicked"
-  | "map_list_toggled";
+  | "map_list_toggled"
+  | "gacha_started"
+  | "gacha_revealed"
+  | "gacha_shared"
+  | "gacha_dismissed";
 
 function isReady(): boolean {
   return (

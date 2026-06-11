@@ -129,3 +129,66 @@
     @apply font-sans;
   }
 }
+
+/* ── Spot Gacha ───────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Brand green used for the lit / winning highlight on the dark scrim. */
+  :root {
+    --gacha-neon: var(--primary);
+  }
+
+  .gacha-glow {
+    animation: gacha-glow 0.8s ease-in-out infinite;
+  }
+  .gacha-pop {
+    animation: gacha-pop 0.45s cubic-bezier(0.22, 1.4, 0.4, 1) both;
+  }
+  .gacha-particle {
+    animation: gacha-particle 0.7s ease-out forwards;
+  }
+
+  @keyframes gacha-glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 14px 2px var(--gacha-neon),
+        0 0 0 1.5px var(--gacha-neon);
+    }
+    50% {
+      box-shadow:
+        0 0 34px 8px var(--gacha-neon),
+        0 0 0 2.5px var(--gacha-neon);
+    }
+  }
+  @keyframes gacha-pop {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.18);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes gacha-particle {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--tx), var(--ty)) scale(0);
+      opacity: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gacha-glow,
+    .gacha-pop,
+    .gacha-particle {
+      animation: none;
+    }
+  }
+}

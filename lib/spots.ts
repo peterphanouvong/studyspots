@@ -38,6 +38,10 @@ const STOCK = [
 const pics = (start: number): string[] =>
   Array.from({ length: 5 }, (_, k) => STOCK[(start + k) % STOCK.length]);
 
+/** Real per-cafe photos served from `public/spots/<id>/<n>.jpeg`. */
+const localPics = (id: string, count: number): string[] =>
+  Array.from({ length: count }, (_, k) => `/spots/${id}/${k + 1}.jpeg`);
+
 /**
  * Hyperlocal seed — Cabramatta & Canley Heights, SW Sydney.
  *
@@ -58,7 +62,11 @@ export const SPOTS: Spot[] = [
     hasWifi: false,
     outletCount: 2,
     noiseLevel: "Loud",
-    hours: days({ weekday: h("06:00", "17:00"), sat: h("07:00", "17:00"), sun: h("07:00", "17:00") }),
+    hours: days({
+      weekday: h("06:00", "17:00"),
+      sat: h("07:00", "17:00"),
+      sun: h("07:00", "17:00"),
+    }),
     houseRules: ["Limited street parking"],
     vibe: ["Colourful", "Earthy", "Homey"],
     music: "Asian Pop",
@@ -75,30 +83,17 @@ export const SPOTS: Spot[] = [
     hasWifi: false,
     outletCount: 1,
     noiseLevel: "Moderate",
-    hours: days({ weekday: h("06:30", "19:00"), sat: h("06:30", "21:00"), sun: h("06:30", "21:00") }),
+    hours: days({
+      weekday: h("06:30", "19:00"),
+      sat: h("06:30", "21:00"),
+      sun: h("06:30", "21:00"),
+    }),
     houseRules: ["Limited street parking"],
     vibe: ["Earthy"],
     music: "Viet-Pop",
-    images: pics(1),
+    images: localPics("cafe-ngon-cabramatta", 3),
   },
-  {
-    id: "the-usual-cabramatta",
-    name: "The Usual Cafe",
-    suburb: "Cabramatta",
-    lat: -33.89515,
-    lng: 150.9375,
-    address: "Shop 8, 46 Hill St, Cabramatta NSW 2166",
-    googleMapsUrl: gmaps("The Usual Cafe", "46 Hill St, Cabramatta NSW 2166"),
-    hasWifi: true,
-    outletCount: 2,
-    noiseLevel: "Moderate",
-    hours: days({ weekday: h("07:00", "16:00"), sat: h("08:00", "15:00"), sun: h("08:00", "15:00") }),
-    houseRules: ["Limited street parking"],
-    website: "https://theusualcafe.com.au",
-    vibe: ["Minimal"],
-    music: "R&B",
-    images: pics(2),
-  },
+
   {
     id: "mondays-cabramatta",
     name: "Mondays",
@@ -154,9 +149,179 @@ export const SPOTS: Spot[] = [
     hasWifi: true,
     outletCount: 2,
     noiseLevel: "Moderate",
-    hours: days({ weekday: h("06:30", "22:30"), sat: h("06:30", "23:00"), sun: h("06:30", "23:00") }),
+    hours: days({
+      weekday: h("06:30", "22:30"),
+      sat: h("06:30", "23:00"),
+      sun: h("06:30", "23:00"),
+    }),
     houseRules: ["Dessert café, open late", "Plenty of parking"],
     vibe: [],
     images: pics(5),
+  },
+  {
+    id: "celsius-canley-heights",
+    name: "Celsius Coffee & Dessert",
+    suburb: "Canley Heights",
+    lat: -33.8874,
+    lng: 150.9149,
+    address: "240 Canley Vale Rd, Canley Heights NSW 2166",
+    googleMapsUrl: gmaps(
+      "Celsius Coffee & Dessert",
+      "240 Canley Vale Rd, Canley Heights NSW 2166",
+    ),
+    hasWifi: true,
+    outletCount: 4,
+    noiseLevel: "Moderate",
+    hours: days({ weekday: h("07:30", "22:00") }),
+    houseRules: ["Can get busy at peak times", "Parking usually easy"],
+    instagram: "celsius.syd",
+    music: "Chill",
+  },
+  {
+    id: "cafe-nho-canley-heights",
+    name: "Cafe Nho",
+    suburb: "Canley Heights",
+    lat: -33.8878,
+    lng: 150.9157,
+    address: "208 Canley Vale Rd, Canley Heights NSW 2166",
+    googleMapsUrl: gmaps(
+      "Cafe Nho",
+      "208 Canley Vale Rd, Canley Heights NSW 2166",
+    ),
+    hasWifi: false,
+    outletCount: 0,
+    noiseLevel: "Moderate",
+    hours: days({ weekday: h("07:00", "23:00") }),
+    houseRules: ["Gets busy at peak times", "Indoor and outdoor seating"],
+    website: "https://canleyheights.cafenho.com.au",
+    instagram: "cafenho_australia",
+  },
+  {
+    id: "tina-and-po-canley-vale",
+    name: "Tina & Po",
+    suburb: "Canley Vale",
+    lat: -33.8868,
+    lng: 150.9427,
+    address: "Shop 4/17 Canley Vale Rd, Canley Vale NSW 2166",
+    googleMapsUrl: gmaps(
+      "Tina & Po",
+      "17 Canley Vale Rd, Canley Vale NSW 2166",
+    ),
+    hasWifi: false,
+    outletCount: 0,
+    noiseLevel: "Moderate",
+    hours: days({ weekday: h("09:00", "21:00") }),
+    instagram: "cafetinapo",
+  },
+  {
+    id: "cafe-thanh-xuan-canley-vale",
+    name: "Cafe Thanh Xuan",
+    suburb: "Canley Vale",
+    lat: -33.8872,
+    lng: 150.9427,
+    address: "3/12-18 Canley Vale Rd, Canley Vale NSW 2166",
+    googleMapsUrl: gmaps(
+      "Cafe Thanh Xuan",
+      "12-18 Canley Vale Rd, Canley Vale NSW 2166",
+    ),
+    hasWifi: false,
+    outletCount: 0,
+    noiseLevel: "Moderate",
+    hours: days({
+      weekday: h("06:00", "22:00"),
+      sat: h("08:00", "22:00"),
+      sun: h("08:00", "22:00"),
+    }),
+    instagram: "cafethanhxuan",
+  },
+  {
+    // STUB — street number & hours unconfirmed (cafe too new to be listed anywhere). Coords are exact from the Google Maps pin.
+    id: "saigon-cafe-new-canley-heights",
+    name: "Saigon Cafe New",
+    suburb: "Canley Heights",
+    lat: -33.8838,
+    lng: 150.9254,
+    address: "Canley Vale Rd, Canley Heights NSW 2166",
+    googleMapsUrl: gmaps(
+      "Saigon Cafe New",
+      "Canley Vale Rd, Canley Heights NSW 2166",
+    ),
+    hasWifi: false,
+    outletCount: 0,
+    noiseLevel: "Moderate",
+    hours: days({ weekday: h("08:00", "17:00") }), // placeholder — confirm
+  },
+  {
+    id: "katsu-cafe-cabramatta",
+    name: "Katsu Cafe",
+    suburb: "Cabramatta",
+    lat: -33.8938,
+    lng: 150.9373,
+    address: "2/44 Park Rd, Cabramatta NSW 2166",
+    googleMapsUrl: gmaps("Katsu Cafe", "44 Park Rd, Cabramatta NSW 2166"),
+    hasWifi: true,
+    outletCount: 0, // confirmed present; exact count to verify
+    noiseLevel: "Moderate",
+    hours: [
+      h("08:30", "16:30"), // Sun
+      h("08:30", "16:30"), // Mon
+      h("08:30", "16:30"), // Tue
+      h("08:30", "16:30"), // Wed
+      h("08:30", "16:30"), // Thu
+      h("08:30", "17:30"), // Fri
+      h("08:30", "17:30"), // Sat
+    ],
+    instagram: "katsucafe.co",
+    images: localPics("katsu-cafe-cabramatta", 3),
+  },
+  {
+    // STUB — address & hours unconfirmed (only directory listing conflates it with The Usual Cafe). Coords are exact from the Google Maps pin.
+    id: "blossom-cafe-cabramatta",
+    name: "Blossom Cafe",
+    suburb: "Cabramatta",
+    lat: -33.8939,
+    lng: 150.9344,
+    address: "Cabramatta NSW 2166",
+    googleMapsUrl: gmaps("68 Blossom Cafe", "Cabramatta NSW 2166"),
+    hasWifi: true,
+    outletCount: 6,
+    noiseLevel: "Moderate",
+    hours: days({
+      weekday: h("07:00", "15:00"),
+      sat: h("07:00", "17:00"),
+      sun: h("07:00", "17:00"),
+    }), // placeholder — confirm
+    instagram: "68blossomcafe",
+    images: localPics("blossom-cafe-cabramatta", 4),
+  },
+  {
+    id: "whitlam-library-cabramatta",
+    name: "Whitlam Library",
+    suburb: "Cabramatta",
+    lat: -33.895,
+    lng: 150.937, // approximate — near Cabramatta Station
+    address: "165 Railway Pde, Cabramatta NSW 2166",
+    googleMapsUrl: gmaps(
+      "Whitlam Library Cabramatta",
+      "165 Railway Pde, Cabramatta NSW 2166",
+    ),
+    hasWifi: true,
+    outletCount: 15, // "plenty at study desks" — exact count to verify
+    noiseLevel: "Quiet",
+    hours: [
+      h("10:00", "14:00"), // Sun
+      h("09:30", "20:00"), // Mon
+      h("09:30", "22:00"), // Tue — confirm
+      h("09:30", "22:00"), // Wed — confirm
+      h("09:30", "23:59"), // Thu — confirm (sources show a late close)
+      h("09:30", "20:00"), // Fri
+      h("10:00", "16:00"), // Sat
+    ],
+    houseRules: [
+      "Free Wi-Fi",
+      "Power at study desks",
+      "Near Cabramatta Station",
+    ],
+    images: localPics("whitlam-library-cabramatta", 6),
   },
 ];
