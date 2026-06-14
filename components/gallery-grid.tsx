@@ -1,13 +1,11 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { Coffee, Grid2x2 } from "lucide-react";
+import { PhotoSlider } from "react-photo-view";
+import "react-photo-view/dist/react-photo-view.css";
 import { ImageCarousel } from "@/components/image-carousel";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 /**
@@ -26,26 +24,42 @@ const GALLERY_LAYOUTS: Record<number, { grid: string; hero: boolean }> = {
  * - mobile: swipeable carousel
  * - desktop: layout adapts to photo count — single hero (1), split (2),
  *   hero + 2 stacked (3), 2×2 grid (4), Airbnb bento 1 large + 4 small (5+).
- *   "Show all photos" opens a lightbox.
+ *   Clicking any photo (or "Show all photos") opens a full-screen viewer.
  */
 export function GalleryGrid({
   images,
   alt,
+  mobileFullBleed = false,
 }: {
   images?: string[];
   alt: string;
+  /** Drop the carousel's rounded corners on mobile for an edge-to-edge image. */
+  mobileFullBleed?: boolean;
 }) {
   const pics = images?.filter(Boolean) ?? [];
 
+  const [visible, setVisible] = useState(false);
+  const [index, setIndex] = useState(0);
+
   if (pics.length === 0) {
     return (
-      <div className="flex aspect-video w-full items-center justify-center rounded-2xl bg-gradient-to-br from-secondary to-muted text-muted-foreground">
+      <div
+        className={cn(
+          "flex aspect-video w-full items-center justify-center bg-gradient-to-br from-secondary to-muted text-muted-foreground",
+          mobileFullBleed ? "rounded-none md:rounded-2xl" : "rounded-2xl",
+        )}
+      >
         <Coffee className="size-12" strokeWidth={1.5} />
       </div>
     );
   }
 
   const bento = pics.slice(0, 5);
+
+  const open = (i: number) => {
+    setIndex(i);
+    setVisible(true);
+  };
 
   return (
     <div className="relative">
@@ -54,19 +68,30 @@ export function GalleryGrid({
         <ImageCarousel
           images={pics}
           alt={alt}
-          className="aspect-video w-full rounded-2xl"
+          className={cn(
+            "aspect-video w-full",
+            mobileFullBleed ? "rounded-none" : "rounded-2xl",
+          )}
         />
       </div>
 
-      {/* Desktop: layout adapts to photo count */}
+      {/* Desktop: layout adapts to photo count. Photos open a full-screen viewer. */}
       <div className="hidden md:block">
         {bento.length === 1 ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={pics[0]}
-            alt={alt}
-            className="aspect-video w-full rounded-2xl object-cover"
-          />
+          <button
+            type="button"
+            onClick={() => open(0)}
+            className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-2xl"
+          >
+            <Image
+              src={pics[0]}
+              alt={alt}
+              fill
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
+          </button>
         ) : (
           <div
             className={cn(
@@ -74,47 +99,52 @@ export function GalleryGrid({
               GALLERY_LAYOUTS[bento.length].grid,
             )}
           >
-            {bento.map((src, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={src}
-                alt={`${alt} — photo ${i + 1}`}
-                className={cn(
-                  "h-full w-full object-cover",
-                  GALLERY_LAYOUTS[bento.length].hero &&
-                    i === 0 &&
-                    "col-span-2 row-span-2",
-                )}
-              />
-            ))}
+            {bento.map((src, i) => {
+              const isHero = GALLERY_LAYOUTS[bento.length].hero && i === 0;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => open(i)}
+                  className={cn(
+                    "group relative block h-full w-full cursor-pointer overflow-hidden",
+                    isHero && "col-span-2 row-span-2",
+                  )}
+                >
+                  <Image
+                    src={src}
+                    alt={`${alt} — photo ${i + 1}`}
+                    fill
+                    sizes={isHero ? "(max-width: 1024px) 67vw, 672px" : "(max-width: 1024px) 33vw, 336px"}
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
 
-      {/* Show all photos → lightbox */}
+      {/* Show all photos → full-screen viewer */}
       {pics.length > 1 && (
-        <Dialog>
-          <DialogTrigger className="absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-white md:flex">
-            <Grid2x2 className="size-4" />
-            Show all photos
-          </DialogTrigger>
-          <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
-            <DialogTitle>{alt} — photos</DialogTitle>
-            <div className="flex flex-col gap-3">
-              {pics.map((src, i) => (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  key={i}
-                  src={src}
-                  alt={`${alt} — photo ${i + 1}`}
-                  className="w-full rounded-xl object-cover"
-                />
-              ))}
-            </div>
-          </DialogContent>
-        </Dialog>
+        <button
+          type="button"
+          onClick={() => open(0)}
+          className="absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-white md:flex"
+        >
+          <Grid2x2 className="size-4" />
+          Show all photos
+        </button>
       )}
+
+      <PhotoSlider
+        images={pics.map((src, i) => ({ src, key: i }))}
+        visible={visible}
+        onClose={() => setVisible(false)}
+        index={index}
+        onIndexChange={setIndex}
+      />
     </div>
   );
 }

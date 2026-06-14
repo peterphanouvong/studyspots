@@ -91,13 +91,13 @@ export function SpotCard({
           })}
         </div>
 
-        {spot.houseRules && spot.houseRules.length > 0 && (
+        {spot.goodToKnow && spot.goodToKnow.length > 0 && (
           <p className="mt-0.5 flex items-center gap-1 text-xs text-foreground/70">
             <Info className="size-3 shrink-0" strokeWidth={2} />
             <span className="truncate">
-              {spot.houseRules[0]}
-              {spot.houseRules.length > 1 &&
-                ` · +${spot.houseRules.length - 1} more`}
+              {spot.goodToKnow[0].title}
+              {spot.goodToKnow.length > 1 &&
+                ` · +${spot.goodToKnow.length - 1} more`}
             </span>
           </p>
         )}

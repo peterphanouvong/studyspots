@@ -35,6 +35,7 @@ export function MapSpotCard({
           images={spot.images}
           alt={spot.name}
           className="aspect-video w-full"
+          sizes="280px"
         />
         <button
           type="button"

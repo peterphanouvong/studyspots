@@ -1,24 +1,18 @@
+import { CafeInfo } from "@/components/cafe-info";
 import { GalleryGrid } from "@/components/gallery-grid";
-import { OffersGrid } from "@/components/offers-grid";
+import { GoodToKnow } from "@/components/good-to-know";
+import { OpenStatus } from "@/components/open-status";
+import { ShareSpotButton } from "@/components/share-spot-button";
 import { SiteHeader } from "@/components/site-header";
+import { SpotLinks } from "@/components/spot-links";
+import { SpotSnapshot } from "@/components/spot-snapshot";
 import { TrackedLink } from "@/components/tracked-link";
 import { buttonVariants } from "@/components/ui/button";
-import { formatTodayHours, isOpenNow } from "@/lib/hours";
 import { FORM_LINKS } from "@/lib/links";
 import { SPOTS } from "@/lib/spots";
 import { cn } from "@/lib/utils";
-import {
-  ArrowLeft,
-  AtSign,
-  Clock,
-  Globe,
-  Info,
-  MapPin,
-  Navigation,
-  Store,
-} from "lucide-react";
+import { MapPin, PencilLine, Store } from "lucide-react";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export function generateStaticParams() {
@@ -53,136 +47,115 @@ export default async function SpotPage({
   const spot = SPOTS.find((s) => s.id === id);
   if (!spot) notFound();
 
-  const open = isOpenNow(spot.hours);
-
   return (
     <>
-      <SiteHeader />
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-6 py-8">
-        <Link
-          href="/"
-          className="flex w-fit items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="size-4" />
-          All spots
-        </Link>
-
-        <GalleryGrid images={spot.images} alt={spot.name} />
-
-        <div className="flex flex-col gap-1">
-          <h1 className="font-heading text-[28px] font-bold leading-tight tracking-tight">
-            {spot.name}
-          </h1>
-          <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-            <MapPin className="size-4 shrink-0" />
-            {spot.address}
-          </p>
-          <p className="mt-1 flex items-center gap-1.5 text-sm">
-            <Clock className="size-4 shrink-0 text-muted-foreground" />
-            <span
-              className={
-                open
-                  ? "font-medium text-emerald-600 dark:text-emerald-400"
-                  : "font-medium text-rose-600 dark:text-rose-400"
-              }
-            >
-              {open ? "Open now" : "Closed"}
-            </span>
-            <span className="text-muted-foreground">
-              · {formatTodayHours(spot.hours)}
-            </span>
-          </p>
+      <SiteHeader back={{ href: "/", label: "All spots" }} />
+      {/* pb-28 on mobile clears the fixed bottom CTA bar */}
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pt-8 pb-28 lg:pb-8">
+        {/* Full-bleed on mobile (breaks out of the px-6 gutter), contained on desktop */}
+        <div className="-mx-6 md:mx-0">
+          <GalleryGrid images={spot.images} alt={spot.name} mobileFullBleed />
         </div>
 
-        <TrackedLink
-          href={spot.googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          event="directions_clicked"
-          eventProps={{ id: spot.id, name: spot.name }}
-          className={cn(buttonVariants({ size: "lg" }), "w-full")}
-        >
-          <Navigation className="size-4" />
-          Get Directions
-        </TrackedLink>
-
-        {(spot.website || spot.instagram) && (
-          <div className="flex flex-wrap gap-2">
-            {spot.website && (
-              <TrackedLink
-                href={spot.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                event="external_link_clicked"
-                eventProps={{ id: spot.id, kind: "website" }}
-                className={buttonVariants({ variant: "outline", size: "sm" })}
-              >
-                <Globe className="size-4" />
-                Website
-              </TrackedLink>
-            )}
-            {spot.instagram && (
-              <TrackedLink
-                href={`https://instagram.com/${spot.instagram}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                event="external_link_clicked"
-                eventProps={{ id: spot.id, kind: "instagram" }}
-                className={buttonVariants({ variant: "outline", size: "sm" })}
-              >
-                <AtSign className="size-4" />
-                {spot.instagram}
-              </TrackedLink>
-            )}
+        {/* Title — name, address, open status, and the quick links */}
+        <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-heading text-[28px] font-bold leading-tight tracking-tight">
+              {spot.name}
+            </h1>
+            <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="size-4 shrink-0" />
+              {spot.address}
+            </p>
+            <OpenStatus spot={spot} className="mt-1" />
           </div>
-        )}
+          <SpotLinks spot={spot} />
+        </div>
+
+        {/* Content + sticky invite card (desktop only; mobile uses the bottom bar) */}
+        <div className="flex flex-col gap-8 lg:grid lg:grid-cols-[1fr_22rem] lg:items-start lg:gap-x-12">
+          <aside className="hidden lg:col-start-2 lg:row-start-1 lg:sticky lg:top-8 lg:block">
+            <div className="flex flex-col gap-4 rounded-2xl border bg-background p-5 shadow-sm">
+              <div className="flex flex-col gap-1">
+                <h2 className="font-heading text-lg font-bold tracking-tight">
+                  Study with a friend
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Know someone who&apos;d love this spot? Send it over and make
+                  it a coffee catch-up.
+                </p>
+              </div>
+
+              <SpotSnapshot spot={spot} />
+
+              {/* Primary CTA — invite someone to coffee (native share / copy link) */}
+              <ShareSpotButton spot={spot} />
+            </div>
+          </aside>
+
+          <div className="flex flex-col gap-8 lg:col-start-1 lg:row-start-1">
+            {spot.goodToKnow && spot.goodToKnow.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <h2 className="font-heading text-lg font-bold tracking-tight">
+                  Good to know
+                </h2>
+                <GoodToKnow spot={spot} />
+              </div>
+            )}
+
+            <div className="flex flex-col gap-3">
+              <h2 className="font-heading text-lg font-bold tracking-tight">
+                Cafe info
+              </h2>
+              <CafeInfo spot={spot} />
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col gap-3">
-          <h2 className="font-heading text-lg font-bold tracking-tight">
-            What this spot offers
-          </h2>
-          <OffersGrid spot={spot} />
-        </div>
-
-        {spot.houseRules && spot.houseRules.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <h2 className="font-heading text-lg font-bold tracking-tight">
-              Good to know
-            </h2>
-            <ul className="rounded-2xl bg-card p-5">
-              {spot.houseRules.map((rule) => (
-                <li
-                  key={rule}
-                  className="flex items-start gap-2 py-1.5 text-sm"
-                >
-                  <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                  {rule}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <TrackedLink
-          href={FORM_LINKS.claimCafe || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          event="claim_cafe_clicked"
-          eventProps={{ id: spot.id, name: spot.name }}
-          className="flex items-center justify-between gap-3 rounded-2xl bg-card p-4 text-sm transition-colors hover:brightness-95"
-        >
-          <span className="flex items-center gap-2">
-            <Store className="size-4 text-muted-foreground" />
-            <span>
-              <span className="font-medium">Is this your cafe?</span>
-              <span className="text-muted-foreground">
-                {" "}
-                — claim it & get in touch.
+          <TrackedLink
+            href={FORM_LINKS.claimCafe || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            event="claim_cafe_clicked"
+            eventProps={{ id: spot.id, name: spot.name }}
+            className="flex items-center justify-between gap-3 rounded-2xl bg-card p-4 text-sm transition-colors hover:brightness-95"
+          >
+            <span className="flex items-center gap-2">
+              <Store className="size-4 text-muted-foreground" />
+              <span>
+                <span className="font-medium">Is this your cafe?</span>
+                <span className="text-muted-foreground">
+                  {" "}
+                  — claim it & get in touch.
+                </span>
               </span>
             </span>
-          </span>
-          <span className="shrink-0 text-muted-foreground">→</span>
-        </TrackedLink>
+            <span className="shrink-0 text-muted-foreground">→</span>
+          </TrackedLink>
+
+          <TrackedLink
+            href={FORM_LINKS.suggestEdit || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            event="suggest_edit_clicked"
+            eventProps={{ id: spot.id, name: spot.name }}
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "w-full",
+            )}
+          >
+            <PencilLine className="size-4" />
+            Suggest an edit
+          </TrackedLink>
+        </div>
+      </div>
+
+      {/* Mobile sticky bottom CTA */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 px-6 py-3 backdrop-blur supports-backdrop-filter:bg-background/80 lg:hidden">
+        <div className="mx-auto max-w-6xl">
+          <ShareSpotButton spot={spot} />
+        </div>
       </div>
     </>
   );

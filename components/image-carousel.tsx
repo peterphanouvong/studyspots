@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, Coffee } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -8,13 +9,23 @@ interface ImageCarouselProps {
   images?: string[];
   alt: string;
   className?: string;
+  /**
+   * Rendered width hint for next/image so it serves a correctly-sized image
+   * instead of the full source. Defaults to the list-card layout.
+   */
+  sizes?: string;
 }
 
 /**
  * Lightweight scroll-snap carousel (no deps). Swipe on touch; arrows on hover
  * (desktop); dots show position. Safe inside a link — controls stop propagation.
  */
-export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
+export function ImageCarousel({
+  images,
+  alt,
+  className,
+  sizes = "(max-width: 768px) 100vw, 400px",
+}: ImageCarouselProps) {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
   const valid = images?.filter(Boolean) ?? [];
@@ -56,14 +67,16 @@ export function ImageCarousel({ images, alt, className }: ImageCarouselProps) {
         className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {valid.map((src, i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={i}
-            src={src}
-            alt={`${alt} — photo ${i + 1}`}
-            loading={i === 0 ? "eager" : "lazy"}
-            className="h-full w-full shrink-0 snap-center object-cover"
-          />
+          <div key={i} className="relative h-full w-full shrink-0 snap-center">
+            <Image
+              src={src}
+              alt={`${alt} — photo ${i + 1}`}
+              fill
+              sizes={sizes}
+              loading={i === 0 ? "eager" : "lazy"}
+              className="object-cover"
+            />
+          </div>
         ))}
       </div>
 

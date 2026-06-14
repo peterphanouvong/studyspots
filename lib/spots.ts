@@ -25,13 +25,14 @@ const gmaps = (name: string, address: string) =>
 
 // ⚠️ PLACEHOLDER PHOTOS — generic stock cafe shots, NOT the real venues.
 // Replace with real per-cafe photos during photo verification before promoting.
+// Bare URLs (no ?w/&q) so next/image controls sizing and quality per slot.
 const STOCK = [
-  "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=70",
-  "https://images.unsplash.com/photo-1453614512568-c4024d13c247?w=1200&q=70",
-  "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=1200&q=70",
-  "https://images.unsplash.com/photo-1559925393-8be0ec4767c8?w=1200&q=70",
-  "https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=1200&q=70",
-  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=1200&q=70",
+  "https://images.unsplash.com/photo-1554118811-1e0d58224f24",
+  "https://images.unsplash.com/photo-1453614512568-c4024d13c247",
+  "https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb",
+  "https://images.unsplash.com/photo-1559925393-8be0ec4767c8",
+  "https://images.unsplash.com/photo-1442512595331-e89e73853f31",
+  "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085",
 ];
 
 /** 5 placeholder photos, rotated by index so each spot looks distinct. */
@@ -50,7 +51,7 @@ const localPics = (id: string, count: number): string[] =>
  * up per cafe; coordinates are approximate (street-level) and hours are
  * best-estimates pending on-the-ground verification.
  */
-export const SPOTS: Spot[] = [
+const ALL_SPOTS: Spot[] = [
   {
     id: "cafe-noi-cabramatta",
     name: "Cafe Noi",
@@ -67,10 +68,17 @@ export const SPOTS: Spot[] = [
       sat: h("07:00", "17:00"),
       sun: h("07:00", "17:00"),
     }),
-    houseRules: ["Limited street parking"],
+    goodToKnow: [
+      {
+        icon: "parking",
+        title: "Limited street parking",
+        description:
+          "Spots out front fill up fast — allow extra time or come by train.",
+      },
+    ],
     vibe: ["Colourful", "Earthy", "Homey"],
     music: "Asian Pop",
-    images: pics(0),
+    images: localPics("cafe-noi-cabramatta", 4),
   },
   {
     id: "cafe-ngon-cabramatta",
@@ -88,7 +96,14 @@ export const SPOTS: Spot[] = [
       sat: h("06:30", "21:00"),
       sun: h("06:30", "21:00"),
     }),
-    houseRules: ["Limited street parking"],
+    goodToKnow: [
+      {
+        icon: "parking",
+        title: "Limited street parking",
+        description:
+          "Parking nearby is tight — a short walk from the station is easiest.",
+      },
+    ],
     vibe: ["Earthy"],
     music: "Viet-Pop",
     images: localPics("cafe-ngon-cabramatta", 3),
@@ -106,14 +121,28 @@ export const SPOTS: Spot[] = [
     outletCount: 3,
     noiseLevel: "Moderate",
     hours: days({ weekday: h("07:00", "17:00") }),
-    houseRules: [
-      "Max 2 hour limit when busy",
-      "Plenty of seating",
-      "Limited street parking",
+    goodToKnow: [
+      {
+        icon: "clock",
+        title: "2-hour limit when busy",
+        description:
+          "At peak times they may ask laptop guests to wrap up after a couple of hours.",
+      },
+      {
+        icon: "seating",
+        title: "Plenty of seating",
+        description:
+          "Usually easy to grab a table with room for a laptop and bags.",
+      },
+      {
+        icon: "parking",
+        title: "Limited street parking",
+        description: "Street spots fill quickly — give yourself a buffer.",
+      },
     ],
     vibe: ["Minimal"],
     music: "None",
-    images: pics(3),
+    images: localPics("mondays-cabramatta", 4),
   },
   {
     id: "salty-cafe-canley-heights",
@@ -130,7 +159,18 @@ export const SPOTS: Spot[] = [
     outletCount: 5,
     noiseLevel: "Moderate",
     hours: days({ weekday: h("07:00", "22:00") }),
-    houseRules: ["Plenty of parking", "Open late — till 10pm"],
+    goodToKnow: [
+      {
+        icon: "parking",
+        title: "Plenty of parking",
+        description: "Easy to find a spot nearby, even at busier times.",
+      },
+      {
+        icon: "clock",
+        title: "Open late till 10pm",
+        description: "One of the few spots around for a late-evening session.",
+      },
+    ],
     instagram: "saltycafe_2166",
     vibe: ["Minimal"],
     images: pics(4),
@@ -154,9 +194,21 @@ export const SPOTS: Spot[] = [
       sat: h("06:30", "23:00"),
       sun: h("06:30", "23:00"),
     }),
-    houseRules: ["Dessert café, open late", "Plenty of parking"],
+    goodToKnow: [
+      {
+        icon: "dessert",
+        title: "Dessert café, open late",
+        description:
+          "Sweet menu and late hours — a good change of scene for evening study.",
+      },
+      {
+        icon: "parking",
+        title: "Plenty of parking",
+        description: "Easy to park close by without circling the block.",
+      },
+    ],
     vibe: [],
-    images: pics(5),
+    images: localPics("harrys-house-canley-heights", 4),
   },
   {
     id: "celsius-canley-heights",
@@ -173,9 +225,22 @@ export const SPOTS: Spot[] = [
     outletCount: 4,
     noiseLevel: "Moderate",
     hours: days({ weekday: h("07:30", "22:00") }),
-    houseRules: ["Can get busy at peak times", "Parking usually easy"],
+    goodToKnow: [
+      {
+        icon: "crowd",
+        title: "Busy at peak times",
+        description:
+          "Fills up on evenings and weekends — go off-peak for a quiet desk.",
+      },
+      {
+        icon: "parking",
+        title: "Parking usually easy",
+        description: "You can normally park close by without much hunting.",
+      },
+    ],
     instagram: "celsius.syd",
     music: "Chill",
+    images: localPics("celsius-canley-heights", 3),
   },
   {
     id: "cafe-nho-canley-heights",
@@ -192,7 +257,18 @@ export const SPOTS: Spot[] = [
     outletCount: 0,
     noiseLevel: "Moderate",
     hours: days({ weekday: h("07:00", "23:00") }),
-    houseRules: ["Gets busy at peak times", "Indoor and outdoor seating"],
+    goodToKnow: [
+      {
+        icon: "crowd",
+        title: "Busy at peak times",
+        description: "Can get loud when full — quieter mid-afternoon.",
+      },
+      {
+        icon: "seating",
+        title: "Indoor and outdoor seating",
+        description: "Pick a quiet corner inside or a table out front.",
+      },
+    ],
     website: "https://canleyheights.cafenho.com.au",
     instagram: "cafenho_australia",
   },
@@ -317,11 +393,37 @@ export const SPOTS: Spot[] = [
       h("09:30", "20:00"), // Fri
       h("10:00", "16:00"), // Sat
     ],
-    houseRules: [
-      "Free Wi-Fi",
-      "Power at study desks",
-      "Near Cabramatta Station",
+    hasBathroom: true,
+    goodToKnow: [
+      {
+        icon: "power",
+        title: "Power at every study desk",
+        description:
+          "Built-in outlets at the desks — no hunting for a wall socket.",
+      },
+      {
+        icon: "transit",
+        title: "Steps from Cabramatta Station",
+        description: "A short walk from the station and the main eat street.",
+      },
+      {
+        icon: "clock",
+        title: "Quiet study floor",
+        description:
+          "A proper library hush — the most reliable focus spot on this list.",
+      },
     ],
     images: localPics("whitlam-library-cabramatta", 6),
   },
 ];
+
+/** True once a spot has real local photos (not stock placeholders / empty). */
+const hasRealPhotos = (s: Spot): boolean =>
+  s.images?.some((src) => src.startsWith("/spots/")) ?? false;
+
+/**
+ * Only publish spots with real photos for now — placeholder/stock and
+ * photo-less spots are hidden from the list, map, and detail routes.
+ * The full set lives in `ALL_SPOTS` so they can be re-enabled once shot.
+ */
+export const SPOTS: Spot[] = ALL_SPOTS.filter(hasRealPhotos);

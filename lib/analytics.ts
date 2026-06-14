@@ -6,6 +6,8 @@ export type AnalyticsEvent =
   | "area_changed"
   | "spot_card_clicked"
   | "directions_clicked"
+  | "spot_shared"
+  | "suggest_edit_clicked"
   | "outlet_vote"
   | "submit_spot_clicked"
   | "feedback_clicked"
