@@ -14,6 +14,8 @@ interface ImageCarouselProps {
    * instead of the full source. Defaults to the list-card layout.
    */
   sizes?: string;
+  /** Notified with the active slide index whenever it changes. */
+  onIndexChange?: (index: number) => void;
 }
 
 /**
@@ -25,6 +27,7 @@ export function ImageCarousel({
   alt,
   className,
   sizes = "(max-width: 768px) 100vw, 400px",
+  onIndexChange,
 }: ImageCarouselProps) {
   const [index, setIndex] = useState(0);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -51,12 +54,15 @@ export function ImageCarousel({
     const next = (i + valid.length) % valid.length;
     el.scrollTo({ left: el.clientWidth * next, behavior: "smooth" });
     setIndex(next);
+    onIndexChange?.(next);
   };
 
   const onScroll = () => {
     const el = trackRef.current;
     if (!el) return;
-    setIndex(Math.round(el.scrollLeft / el.clientWidth));
+    const next = Math.round(el.scrollLeft / el.clientWidth);
+    setIndex(next);
+    onIndexChange?.(next);
   };
 
   return (

@@ -57,7 +57,7 @@ export default async function SpotPage({
         <GalleryGrid images={spot.images} alt={spot.name} mobileFullBleed />
       </div>
 
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pt-8 pb-28 sm:pb-8 rounded-t-[36px] -mt-9 sm:mt-0 z-50 bg-white sm:rounded-none shadow-2xl sm:shadow-none">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pt-8 pb-28 sm:pb-8 rounded-t-[36px] -mt-9 sm:mt-0 z-30 bg-white sm:rounded-none shadow-2xl sm:shadow-none">
         {/* Full-bleed on mobile (breaks out of the px-6 gutter), contained on desktop */}
 
         {/* Title — name, address, open status, and the quick links */}
@@ -119,26 +119,16 @@ export default async function SpotPage({
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex gap-2">
           <TrackedLink
             href={FORM_LINKS.claimCafe || "#"}
             target="_blank"
             rel="noopener noreferrer"
             event="claim_cafe_clicked"
             eventProps={{ id: spot.id, name: spot.name }}
-            className="flex items-center justify-between gap-3 rounded-2xl bg-card p-4 text-sm transition-colors hover:brightness-95"
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
           >
-            <span className="flex items-center gap-2">
-              <Store className="size-4 text-muted-foreground" />
-              <span>
-                <span className="font-medium">Is this your cafe?</span>
-                <span className="text-muted-foreground">
-                  {" "}
-                  — claim it & get in touch.
-                </span>
-              </span>
-            </span>
-            <span className="shrink-0 text-muted-foreground">→</span>
+            Own this cafe?
           </TrackedLink>
 
           <TrackedLink
@@ -147,12 +137,8 @@ export default async function SpotPage({
             rel="noopener noreferrer"
             event="suggest_edit_clicked"
             eventProps={{ id: spot.id, name: spot.name }}
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "w-full",
-            )}
+            className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
           >
-            <PencilLine className="size-4" />
             Suggest an edit
           </TrackedLink>
         </div>

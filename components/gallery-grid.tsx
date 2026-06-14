@@ -40,6 +40,7 @@ export function GalleryGrid({
 
   const [visible, setVisible] = useState(false);
   const [index, setIndex] = useState(0);
+  const [carouselIndex, setCarouselIndex] = useState(0);
 
   if (pics.length === 0) {
     return (
@@ -64,15 +65,21 @@ export function GalleryGrid({
   return (
     <div className="relative">
       {/* Mobile: carousel */}
-      <div className="sm:hidden">
+      <div className="relative sm:hidden">
         <ImageCarousel
           images={pics}
           alt={alt}
+          onIndexChange={setCarouselIndex}
           className={cn(
             "aspect-video w-full",
             mobileFullBleed ? "rounded-none aspect-square!" : "rounded-2xl",
           )}
         />
+        {pics.length > 1 && (
+          <div className="pointer-events-none absolute bottom-11 left-3 rounded-full bg-black/65 px-2.5 py-1 text-xs font-semibold tabular-nums text-white backdrop-blur-sm">
+            {carouselIndex + 1} / {pics.length}
+          </div>
+        )}
       </div>
 
       {/* Desktop: layout adapts to photo count. Photos open a full-screen viewer. */}
