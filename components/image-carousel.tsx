@@ -1,8 +1,8 @@
 "use client";
 
 import { useRef, useState } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, Coffee } from "lucide-react";
+import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { cn } from "@/lib/utils";
 
 interface ImageCarouselProps {
@@ -68,7 +68,7 @@ export function ImageCarousel({
       >
         {valid.map((src, i) => (
           <div key={i} className="relative h-full w-full shrink-0 snap-center">
-            <Image
+            <ImageWithSkeleton
               src={src}
               alt={`${alt} — photo ${i + 1}`}
               fill

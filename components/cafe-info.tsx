@@ -33,7 +33,7 @@ function ValueField({
 }) {
   return (
     <div>
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+      <p className="flex items-center gap-2 text-sm font-medium text-foreground">
         <Icon className="size-4" strokeWidth={1.75} />
         {label}
       </p>

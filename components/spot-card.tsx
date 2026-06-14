@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Info, Plug, Volume2, Wifi } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { FounderFavouriteBadge } from "@/components/founder-favourite-badge";
 import { ImageCarousel } from "@/components/image-carousel";
 import { track } from "@/lib/analytics";
 import { coreAmenities, type AmenityIcon } from "@/lib/amenities";
@@ -50,15 +51,20 @@ export function SpotCard({
       onBlur={() => onActiveChange?.(null)}
       className="group flex flex-col gap-3 rounded-2xl outline-none"
     >
-      <ImageCarousel
-        images={spot.images}
-        alt={spot.name}
-        className={cn(
-          "aspect-[4/3] w-full rounded-2xl ring-offset-2 ring-offset-background transition-all",
-          active && "ring-2 ring-primary",
-          "group-focus-visible:ring-2 group-focus-visible:ring-ring",
+      <div className="relative">
+        <ImageCarousel
+          images={spot.images}
+          alt={spot.name}
+          className={cn(
+            "aspect-[4/3] w-full rounded-2xl ring-offset-2 ring-offset-background transition-all",
+            active && "ring-2 ring-primary",
+            "group-focus-visible:ring-2 group-focus-visible:ring-ring",
+          )}
+        />
+        {spot.founderFavourite && (
+          <FounderFavouriteBadge className="absolute left-3 top-3 z-10 shadow-sm" />
         )}
-      />
+      </div>
 
       <div className="flex flex-col gap-1.5">
         <div className="flex items-baseline justify-between gap-2">

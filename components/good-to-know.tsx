@@ -1,9 +1,12 @@
 import {
   Armchair,
+  Banknote,
   Car,
   Clock,
+  Coffee,
   Cookie,
   Info,
+  Laptop,
   MapPin,
   Plug,
   TrainFront,
@@ -23,6 +26,9 @@ const ICON: Record<GoodToKnowIcon, LucideIcon> = {
   transit: TrainFront,
   wifi: Wifi,
   power: Plug,
+  cash: Banknote,
+  laptop: Laptop,
+  coffee: Coffee,
   location: MapPin,
   info: Info,
 };

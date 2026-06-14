@@ -1,5 +1,43 @@
 import type { Hours } from "@/lib/types";
 
+/**
+ * Spot hours are expressed in the spot's local time, which for every spot is
+ * Sydney. We must therefore read "now" as Sydney wall-clock time — never the
+ * host's local zone, which is UTC on the server (Vercel) and the visitor's own
+ * zone in the browser.
+ */
+const SPOT_TZ = "Australia/Sydney";
+
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0,
+  Mon: 1,
+  Tue: 2,
+  Wed: 3,
+  Thu: 4,
+  Fri: 5,
+  Sat: 6,
+};
+
+/** The day-of-week (0 = Sunday) and minutes-since-midnight in Sydney for `now`. */
+function spotWallClock(now: Date): { day: number; minutes: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: SPOT_TZ,
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(now);
+
+  const get = (type: string) =>
+    parts.find((p) => p.type === type)?.value ?? "";
+
+  const day = WEEKDAY_INDEX[get("weekday")] ?? now.getDay();
+  // Intl can emit "24" for midnight depending on the runtime; normalise to 0.
+  const hour = Number(get("hour")) % 24;
+  const minute = Number(get("minute"));
+  return { day, minutes: hour * 60 + minute };
+}
+
 function toMinutes(hhmm: string): number {
   const [h, m] = hhmm.split(":").map(Number);
   return h * 60 + m;
@@ -14,7 +52,7 @@ export function closesLate(
   now: Date = new Date(),
   hour = 20,
 ): boolean {
-  const today = hours[now.getDay()];
+  const today = hours[spotWallClock(now).day];
   if (!today) return false;
   const open = toMinutes(today.open);
   const close = toMinutes(today.close);
@@ -24,7 +62,7 @@ export function closesLate(
 
 /** Today's hours as a label, e.g. "9:00 AM – 8:00 PM" or "Closed". */
 export function formatTodayHours(hours: Hours, now: Date = new Date()): string {
-  const today = hours[now.getDay()];
+  const today = hours[spotWallClock(now).day];
   if (!today) return "Closed today";
   return `${to12h(today.open)} – ${to12h(today.close)}`;
 }
@@ -43,8 +81,7 @@ function to12h(hhmm: string): string {
  * close time that is less-than-or-equal to the open time as the next day.
  */
 export function isOpenNow(hours: Hours, now: Date = new Date()): boolean {
-  const minutesNow = now.getHours() * 60 + now.getMinutes();
-  const day = now.getDay();
+  const { day, minutes: minutesNow } = spotWallClock(now);
 
   // Spot open past midnight: a window that started "yesterday" may still apply.
   const yesterday = hours[(day + 6) % 7];

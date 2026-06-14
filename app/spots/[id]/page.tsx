@@ -1,4 +1,6 @@
 import { CafeInfo } from "@/components/cafe-info";
+import { FounderFavouriteHero } from "@/components/founder-favourite-hero";
+import { FoundersTip } from "@/components/founders-tip";
 import { GalleryGrid } from "@/components/gallery-grid";
 import { GoodToKnow } from "@/components/good-to-know";
 import { OpenStatus } from "@/components/open-status";
@@ -94,6 +96,10 @@ export default async function SpotPage({
           </aside>
 
           <div className="flex flex-col gap-8 lg:col-start-1 lg:row-start-1">
+            {spot.founderFavourite && <FounderFavouriteHero />}
+
+            <FoundersTip spot={spot} />
+
             {spot.goodToKnow && spot.goodToKnow.length > 0 && (
               <div className="flex flex-col gap-1">
                 <h2 className="font-heading text-lg font-bold tracking-tight">

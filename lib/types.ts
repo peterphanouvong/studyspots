@@ -13,6 +13,9 @@ export type GoodToKnowIcon =
   | "transit"
   | "wifi"
   | "power"
+  | "cash"
+  | "laptop"
+  | "coffee"
   | "location"
   | "info";
 
@@ -78,4 +81,6 @@ export interface Spot {
   foundersTip?: string;
   /** Founder has physically verified this spot. Drives the green "Verified" badge. */
   verified?: boolean;
+  /** A founder's personal pick. Drives the "Founder favourite" tag. */
+  founderFavourite?: boolean;
 }

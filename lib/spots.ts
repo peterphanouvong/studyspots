@@ -70,6 +70,12 @@ const ALL_SPOTS: Spot[] = [
     }),
     goodToKnow: [
       {
+        icon: "wifi",
+        title: "Wi-Fi via nearby networks",
+        description:
+          "No café Wi-Fi, but you can hop on the Telstra Air hotspot nearby or the hotel's Guest Wi-Fi.",
+      },
+      {
         icon: "parking",
         title: "Limited street parking",
         description:
@@ -97,6 +103,18 @@ const ALL_SPOTS: Spot[] = [
       sun: h("06:30", "21:00"),
     }),
     goodToKnow: [
+      {
+        icon: "cash",
+        title: "Bring cash — no card",
+        description:
+          "They don't take card; it's cash or bank transfer, so bring some cash to be safe.",
+      },
+      {
+        icon: "crowd",
+        title: "A local uncle hangout",
+        description:
+          "Lots of Vietnamese uncles catch up here — lively and full of character, not a silent study cave.",
+      },
       {
         icon: "parking",
         title: "Limited street parking",
@@ -142,6 +160,8 @@ const ALL_SPOTS: Spot[] = [
     ],
     vibe: ["Minimal"],
     music: "None",
+    foundersTip:
+      "Super comfy and spacious to work — just bring a hotspot or your own data, there's no Wi-Fi here.",
     images: localPics("mondays-cabramatta", 4),
   },
   {
@@ -240,6 +260,9 @@ const ALL_SPOTS: Spot[] = [
     ],
     instagram: "celsius.syd",
     music: "Chill",
+    founderFavourite: true,
+    foundersTip:
+      "A favourite of mine for the vibe, drinks and outlets — get the coconut matcha with a shot of espresso. So good.",
     images: localPics("celsius-canley-heights", 3),
   },
   {
@@ -348,6 +371,31 @@ const ALL_SPOTS: Spot[] = [
       h("08:30", "17:30"), // Sat
     ],
     instagram: "katsucafe.co",
+    vibe: ["Cosy"],
+    music: "Chill R&B",
+    founderFavourite: true,
+    foundersTip:
+      "One of my favourites — great vibe, reliable internet, and the drinks are spot on.",
+    goodToKnow: [
+      {
+        icon: "laptop",
+        title: "Laptop-friendly",
+        description:
+          "Locals settle in to work here, so you'll fit right in setting up for a session.",
+      },
+      {
+        icon: "coffee",
+        title: "Great drinks, friendly staff",
+        description:
+          "A cosy little spot with lovely drinks and welcoming staff — easy to linger.",
+      },
+      {
+        icon: "crowd",
+        title: "Popular with young locals",
+        description:
+          "A favourite with the younger crowd, so it can fill up — time it if you want a quiet table.",
+      },
+    ],
     images: localPics("katsu-cafe-cabramatta", 3),
   },
   {
@@ -361,13 +409,38 @@ const ALL_SPOTS: Spot[] = [
     googleMapsUrl: gmaps("68 Blossom Cafe", "Cabramatta NSW 2166"),
     hasWifi: true,
     outletCount: 6,
-    noiseLevel: "Moderate",
+    noiseLevel: "Quiet",
     hours: days({
       weekday: h("07:00", "15:00"),
       sat: h("07:00", "17:00"),
       sun: h("07:00", "17:00"),
     }), // placeholder — confirm
     instagram: "68blossomcafe",
+    goodToKnow: [
+      {
+        icon: "power",
+        title: "Outlets everywhere",
+        description:
+          "Plenty of power points (6 and counting) — settle in for a long session.",
+      },
+      {
+        icon: "crowd",
+        title: "Quiet with a few regulars",
+        description:
+          "Usually calm with a handful of regulars — an easy place to focus.",
+      },
+      {
+        icon: "coffee",
+        title: "Friendly staff",
+        description: "Welcoming staff who are happy to let you linger.",
+      },
+      {
+        icon: "parking",
+        title: "Paid parking nearby",
+        description:
+          "Free parking is hard to come by, but there's paid parking close by.",
+      },
+    ],
     images: localPics("blossom-cafe-cabramatta", 4),
   },
   {
@@ -394,6 +467,9 @@ const ALL_SPOTS: Spot[] = [
       h("10:00", "16:00"), // Sat
     ],
     hasBathroom: true,
+    founderFavourite: true,
+    foundersTip:
+      "My pick to really lock in: grab a monitor desk in the Workary, bring headphones, and get a coffee from Seeker Cafe nearby — a must.",
     goodToKnow: [
       {
         icon: "power",

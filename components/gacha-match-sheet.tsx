@@ -114,7 +114,7 @@ export function GachaMatchSheet({
 
           {spot.foundersTip && (
             <div className="mt-4 rounded-2xl bg-primary/5 p-4">
-              <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-primary">
+              <p className="flex items-center gap-1.5 text-sm font-semibold text-primary">
                 <Quote className="size-3.5" />
                 Founder&apos;s tip
               </p>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Coffee, Grid2x2 } from "lucide-react";
+import { ImageWithSkeleton } from "@/components/image-with-skeleton";
 import { PhotoSlider } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import { ImageCarousel } from "@/components/image-carousel";
@@ -83,7 +83,7 @@ export function GalleryGrid({
             onClick={() => open(0)}
             className="group relative block aspect-video w-full cursor-pointer overflow-hidden rounded-2xl"
           >
-            <Image
+            <ImageWithSkeleton
               src={pics[0]}
               alt={alt}
               fill
@@ -111,7 +111,7 @@ export function GalleryGrid({
                     isHero && "col-span-2 row-span-2",
                   )}
                 >
-                  <Image
+                  <ImageWithSkeleton
                     src={src}
                     alt={`${alt} — photo ${i + 1}`}
                     fill
