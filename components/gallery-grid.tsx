@@ -45,8 +45,8 @@ export function GalleryGrid({
     return (
       <div
         className={cn(
-          "flex aspect-video w-full items-center justify-center bg-gradient-to-br from-secondary to-muted text-muted-foreground",
-          mobileFullBleed ? "rounded-none md:rounded-2xl" : "rounded-2xl",
+          "flex aspect-video w-full items-center justify-center bg-linear-to-br from-secondary to-muted text-muted-foreground",
+          mobileFullBleed ? "rounded-none sm:rounded-2xl " : "rounded-2xl",
         )}
       >
         <Coffee className="size-12" strokeWidth={1.5} />
@@ -64,19 +64,19 @@ export function GalleryGrid({
   return (
     <div className="relative">
       {/* Mobile: carousel */}
-      <div className="md:hidden">
+      <div className="sm:hidden">
         <ImageCarousel
           images={pics}
           alt={alt}
           className={cn(
             "aspect-video w-full",
-            mobileFullBleed ? "rounded-none" : "rounded-2xl",
+            mobileFullBleed ? "rounded-none aspect-square!" : "rounded-2xl",
           )}
         />
       </div>
 
       {/* Desktop: layout adapts to photo count. Photos open a full-screen viewer. */}
-      <div className="hidden md:block">
+      <div className="hidden sm:block">
         {bento.length === 1 ? (
           <button
             type="button"
@@ -115,7 +115,11 @@ export function GalleryGrid({
                     src={src}
                     alt={`${alt} — photo ${i + 1}`}
                     fill
-                    sizes={isHero ? "(max-width: 1024px) 67vw, 672px" : "(max-width: 1024px) 33vw, 336px"}
+                    sizes={
+                      isHero
+                        ? "(max-width: 1024px) 67vw, 672px"
+                        : "(max-width: 1024px) 33vw, 336px"
+                    }
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
@@ -131,7 +135,7 @@ export function GalleryGrid({
         <button
           type="button"
           onClick={() => open(0)}
-          className="absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-white md:flex"
+          className="absolute bottom-3 right-3 hidden items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:bg-white sm:flex"
         >
           <Grid2x2 className="size-4" />
           Show all photos

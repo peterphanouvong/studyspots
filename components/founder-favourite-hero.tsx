@@ -11,7 +11,7 @@ const RIGHT_LAUREL =
  */
 export function FounderFavouriteHero() {
   return (
-    <div className="flex items-center justify-between gap-1.5 p-4 border rounded-2xl">
+    <div className="flex items-center flex-col sm:flex-row sm:justify-between gap-1.5 p-4 border rounded-2xl">
       <div className="flex items-center gap-3">
         <Image
           src={LEFT_LAUREL}
@@ -31,10 +31,8 @@ export function FounderFavouriteHero() {
           className="h-12 w-auto select-none"
         />
       </div>
-      <p className="max-w-xs text-md font-semibold">
-        One of our personal
-        <br />
-        go-to spots to study.
+      <p className="max-w-[240px] text-center sm:text-right text-md font-semibold">
+        One of our personal go-to spots to study
       </p>
     </div>
   );

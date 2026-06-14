@@ -53,11 +53,12 @@ export default async function SpotPage({
     <>
       <SiteHeader back={{ href: "/", label: "All spots" }} />
       {/* pb-28 on mobile clears the fixed bottom CTA bar */}
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pt-8 pb-28 lg:pb-8">
+      <div className="sm:max-w-6xl sm:px-6 mx-auto w-full sm:pt-4">
+        <GalleryGrid images={spot.images} alt={spot.name} mobileFullBleed />
+      </div>
+
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-6 pt-8 pb-28 sm:pb-8 rounded-t-[36px] -mt-9 sm:mt-0 z-50 bg-white sm:rounded-none shadow-2xl sm:shadow-none">
         {/* Full-bleed on mobile (breaks out of the px-6 gutter), contained on desktop */}
-        <div className="-mx-6 md:mx-0">
-          <GalleryGrid images={spot.images} alt={spot.name} mobileFullBleed />
-        </div>
 
         {/* Title — name, address, open status, and the quick links */}
         <div className="flex flex-col gap-2">
@@ -110,7 +111,7 @@ export default async function SpotPage({
             )}
 
             <div className="flex flex-col gap-3">
-              <h2 className="font-heading text-lg font-bold tracking-tight">
+              <h2 className="font-heading text-lg font-bold tracking-tight mb-2">
                 Cafe info
               </h2>
               <CafeInfo spot={spot} />

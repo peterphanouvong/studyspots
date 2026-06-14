@@ -120,7 +120,7 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
       {/* Airbnb-style: list on the left, fixed map on the right (desktop);
           full-screen map + bottom sheet (mobile). */}
       <div className="flex min-h-0 flex-1 md:flex-row-reverse">
-        <div className="block h-full w-full md:w-2/5 md:py-4 md:pr-4">
+        <div className="block h-full w-full md:w-1/2 md:py-4 md:pr-4">
           <div className="h-full w-full overflow-hidden md:rounded-2xl md:border">
             <MapView
               apiKey={apiKey}
@@ -135,9 +135,9 @@ export function SpotsExplorer({ apiKey }: { apiKey: string }) {
           </div>
         </div>
 
-        {/* List: left 60% on desktop only */}
-        <div className="hidden overflow-y-auto md:block md:w-3/5">
-          <div className="flex min-h-full flex-col px-6 py-7">
+        {/* List: left 50% on desktop only */}
+        <div className="hidden overflow-y-auto md:block md:w-1/2">
+          <div className="flex min-h-full flex-col px-6 py-7 lg:px-10 xl:px-14">
             <h1 className="mb-6 font-heading text-2xl font-bold tracking-tight">
               {countLabel}
             </h1>

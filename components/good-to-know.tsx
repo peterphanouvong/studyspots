@@ -42,23 +42,19 @@ export function GoodToKnow({ spot }: { spot: Spot }) {
   if (items.length === 0) return null;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col border-b">
       {items.map((item, i) => {
         const Icon = ICON[item.icon];
         return (
-          <div
-            key={item.title}
-            className={cn(
-              "flex items-start gap-4 py-4",
-              i > 0 && "border-t border-border/60",
-            )}
-          >
+          <div key={item.title} className={cn("flex items-start gap-6 py-4")}>
             <Icon
               className="mt-0.5 size-6 shrink-0 text-foreground"
               strokeWidth={1.5}
             />
             <div className="flex flex-col gap-0.5">
-              <p className="font-medium leading-tight">{item.title}</p>
+              <p className="font-semibold leading-tight text-sm">
+                {item.title}
+              </p>
               <p className="text-sm text-muted-foreground">
                 {item.description}
               </p>
