@@ -64,8 +64,11 @@ export function GalleryGrid({
 
   return (
     <div className="relative">
-      {/* Mobile: carousel */}
-      <div className="relative sm:hidden">
+      {/* Mobile: carousel — tap opens the full-screen viewer at the active slide */}
+      <div
+        className="relative cursor-pointer sm:hidden"
+        onClick={() => open(carouselIndex)}
+      >
         <ImageCarousel
           images={pics}
           alt={alt}
